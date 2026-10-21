@@ -97,6 +97,12 @@ docker pull registry.cn-hangzhou.aliyuncs.com/<namespace>/kubevirt-panel:latest
 
 ---
 
+## 联系方式
+
+微信 / 联系：**rz1433**
+
+---
+
 ## 仓库说明
 
 本仓库提供产品说明与界面截图，方便对比选型。  
