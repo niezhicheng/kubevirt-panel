@@ -1,93 +1,103 @@
-# kubevirt 云平台管理 — 产品界面预览
+# KubeVirt 面板
 
-基于 **KubeVirt + Kube-OVN** 的虚拟化云管控制台界面截图。  
-**源码不开源**；部署请使用构建好的容器镜像（计划发布至 Docker Hub / 阿里云容器镜像服务）。
+面向 KubeVirt 集群的 Web 管理面板。  
+比 [kubevirt-manager](https://github.com/kubevirt-manager/kubevirt-manager) 更完整：虚拟机全生命周期 + **Kube-OVN 网络** + 存储镜像 + 运维迁移，一套界面搞定。
 
-默认演示账号：`admin`（密码部署时配置，不在此公开）。
-
----
-
-## 功能一览
-
-| 模块 | 说明 |
-|------|------|
-| 虚拟化资源 | 虚拟机列表、副本集、启停/重启/暂停、创建与详情 |
-| 基础网络 | VPC / 子网 / IP / 安全组（Kube-OVN） |
-| 云网络资源 | OVN EIP / SNAT / DNAT / FIP |
-| 网络高级功能 | NAD、QoS 等 |
-| 存储与镜像 | PVC、DataVolume、模板与镜像导入 |
-| 运维中心 | 事件日志、告警、任务、热迁移 |
+> 用镜像部署即可，无需自己编译源码。
 
 ---
 
-## 界面截图
+## 为什么不用 kubevirt-manager？
 
-### 1. 登录
+| | kubevirt-manager | **KubeVirt 面板** |
+|--|--|--|
+| 虚拟机创建 / 启停 / VNC | ✅ | ✅ |
+| 硬件模板 / Preference | 有限 | ✅ Instancetype + Preference |
+| Kube-OVN VPC / 子网 / NAD | ❌ | ✅ |
+| EIP / SNAT / DNAT / FIP | ❌ | ✅ |
+| PVC / DataVolume / 镜像导入 | 基础 | ✅ 含上传与模板 |
+| 事件、告警、热迁移 | 弱 | ✅ 运维中心 |
+
+适合已经在用（或准备用）**KubeVirt + Kube-OVN** 的环境，不想再为网络/存储另开一套工具。
+
+---
+
+## 能力概览
+
+- **虚拟机**：列表、向导创建、详情、重启/暂停、VNC、YAML、资源关系  
+- **网络**：VPC、子网、IP、安全组、NAD、QoS、EIP/SNAT/DNAT/FIP  
+- **存储**：PVC、DataVolume、模板与镜像导入  
+- **运维**：事件日志、告警、任务、热迁移  
+
+---
+
+## 界面预览
+
+### 登录
 
 ![登录](images/01-login.png)
 
-### 2. 虚拟化资源 · 虚拟机列表
+### 虚拟机列表
 
 ![虚拟机列表](images/02-virt-resources.png)
 
-### 3. 创建虚拟机
+### 创建虚拟机
 
 ![创建虚拟机](images/08-create-vm-form.png)
 
-### 4. 虚拟机详情
+### 虚拟机详情
 
 ![虚拟机详情](images/09-vm-detail.png)
 
-### 5. 基础网络 · VPC
+### VPC / 基础网络
 
-![基础网络 VPC](images/03-kube-ovn-basic-net.png)
+![VPC](images/03-kube-ovn-basic-net.png)
 
-### 6. 子网
+### 子网
 
 ![子网](images/10-kube-ovn-subnet.png)
 
-### 7. 云网络资源 · EIP
+### 云网络（EIP 等）
 
-![云网络 EIP](images/04-kube-ovn-cloud-net.png)
+![云网络](images/04-kube-ovn-cloud-net.png)
 
-### 8. 网络高级功能 · NAD
+### NAD / 高级网络
 
 ![NAD](images/05-kube-ovn-adv-net.png)
 
-### 9. 存储与镜像 · PVC
+### 存储与 PVC
 
-![存储 PVC](images/06-storage-center.png)
+![存储](images/06-storage-center.png)
 
-### 10. 模板与镜像
+### 硬件模板
 
 ![模板](images/11-templates.png)
 
-### 11. 运维中心 · 事件与日志
+### 运维 · 事件
 
-![运维中心](images/07-ops-center.png)
+![运维](images/07-ops-center.png)
 
 ---
 
-## 获取与部署（镜像，非源码）
+## 快速开始
 
-源码仓库不公开。对外分发方式：
+依赖：Kubernetes、[KubeVirt](https://kubevirt.io/)、可选 [Kube-OVN](https://github.com/kubeovn/kube-ovn) / Multus。
 
-- **Docker Hub**：`docker.io/<namespace>/kubevirt-admin:<tag>`（待发布）
-- **阿里云 ACR**：`registry.cn-<region>.aliyuncs.com/<namespace>/kubevirt-admin:<tag>`（待发布）
-
-拉取示例（镜像发布后可用）：
+镜像发布后（Docker Hub / 阿里云）：
 
 ```bash
-docker pull docker.io/<namespace>/kubevirt-admin:latest
-# 或
-docker pull registry.cn-hangzhou.aliyuncs.com/<namespace>/kubevirt-admin:latest
+# Docker Hub（待发布）
+docker pull docker.io/<namespace>/kubevirt-panel:latest
+
+# 阿里云 ACR（待发布）
+docker pull registry.cn-hangzhou.aliyuncs.com/<namespace>/kubevirt-panel:latest
 ```
 
-需已安装并可用：Kubernetes、KubeVirt、（可选）Kube-OVN / Multus。
+默认账号：`admin`（密码以你部署时的配置为准）。
 
 ---
 
-## 说明
+## 仓库说明
 
-本仓库仅包含**产品截图与说明**，不含业务源码。  
-截图拍摄于本地运行环境（`2026-10-21`），界面以实际部署版本为准。
+本仓库提供产品说明与界面截图，方便对比选型。  
+业务代码通过容器镜像分发，不在此开源。
