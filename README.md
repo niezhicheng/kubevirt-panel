@@ -83,24 +83,24 @@
 
 依赖：Kubernetes、[KubeVirt](https://kubevirt.io/)、可选 [Kube-OVN](https://github.com/kubeovn/kube-ovn) / Multus。
 
-镜像由 **Gitee Go 云端构建**（不在开发机本地 build），推送到 Docker Hub / 阿里云 ACR：
+镜像由 **Gitee Go** 云端构建，推送到阿里云 ACR（河源）：
 
-| 镜像 | 说明 |
-|------|------|
-| `kubevirt-panel-web` | 前端面板（nginx） |
-| `kubevirt-panel-api` | HTTP API |
-| `kubevirt-panel-virt` | KubeVirt gRPC |
-| `kubevirt-panel-ovn` | Kube-OVN gRPC |
+```text
+registry.cn-heyuan.aliyuncs.com/yuanbuluo/kubevirt
+```
+
+| Tag | 说明 |
+|-----|------|
+| `web-latest` | 前端面板 |
+| `api-latest` | HTTP API |
+| `virt-latest` | KubeVirt gRPC |
+| `ovn-latest` | Kube-OVN gRPC |
 
 ```bash
-# 示例（把 <ns> 换成你的命名空间）
-export IMAGE_PREFIX=docker.io/<ns>
-# 或：export IMAGE_PREFIX=registry.cn-hangzhou.aliyuncs.com/<ns>
-
-docker pull $IMAGE_PREFIX/kubevirt-panel-web:latest
-docker pull $IMAGE_PREFIX/kubevirt-panel-api:latest
-docker pull $IMAGE_PREFIX/kubevirt-panel-virt:latest
-docker pull $IMAGE_PREFIX/kubevirt-panel-ovn:latest
+docker pull registry.cn-heyuan.aliyuncs.com/yuanbuluo/kubevirt:web-latest
+docker pull registry.cn-heyuan.aliyuncs.com/yuanbuluo/kubevirt:api-latest
+docker pull registry.cn-heyuan.aliyuncs.com/yuanbuluo/kubevirt:virt-latest
+docker pull registry.cn-heyuan.aliyuncs.com/yuanbuluo/kubevirt:ovn-latest
 ```
 
 默认账号：`admin`（密码以你部署时的配置为准）。  
