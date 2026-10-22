@@ -7,6 +7,51 @@
 
 ---
 
+## 快速部署（Docker Compose）
+
+**依赖**：本机能访问目标 Kubernetes；集群已装 [KubeVirt](https://kubevirt.io/)；[Kube-OVN](https://github.com/kubeovn/kube-ovn) / Multus 可选（网络相关功能需要）。
+
+```bash
+git clone https://github.com/niezhicheng/kubevirt-panel.git
+cd kubevirt-panel
+
+# 可选：改 kubeconfig 路径或端口
+cp .env.example .env
+
+docker compose pull
+docker compose up -d
+```
+
+浏览器打开：**http://localhost:8080**  
+默认账号：`admin` / `admin123`（请尽快修改或仅用于内网试用）
+
+停止：
+
+```bash
+docker compose down
+```
+
+### 镜像（阿里云 ACR · 河源）
+
+| Tag | 说明 |
+|-----|------|
+| `web-latest` | 前端（Nginx，反代 `/api`） |
+| `api-latest` | HTTP API |
+| `virt-latest` | KubeVirt gRPC（需挂载 kubeconfig） |
+| `ovn-latest` | Kube-OVN gRPC（需挂载 kubeconfig） |
+
+完整地址：`registry.cn-heyuan.aliyuncs.com/yuanbuluo/kubevirt:<tag>`
+
+### 常见问题
+
+- **拉镜像失败**：确认能访问 `registry.cn-heyuan.aliyuncs.com`（国内网络一般可直连）。
+- **面板能开但列表空 / 报错**：检查 `.env` 里 `KUBECONFIG_HOST` 是否指向有效 kubeconfig，且该凭证对目标集群有权限；容器内需能访问 apiserver 地址（若 kubeconfig 里是内网 IP，请在能路由到该网段的机器上跑 Compose）。
+- **只要 VM、不用 OVN**：仍建议一起启动 `ovn` 服务（compose 已编排）；无 OVN 时相关菜单会不可用或报错，不影响纯虚拟机能力。
+
+试用 / 部署问题加微信：**rz1433**
+
+---
+
 ## 为什么不用 kubevirt-manager？
 
 | | kubevirt-manager | **KubeVirt 面板** |
@@ -79,35 +124,6 @@
 
 ---
 
-## 快速开始
-
-依赖：Kubernetes、[KubeVirt](https://kubevirt.io/)、可选 [Kube-OVN](https://github.com/kubeovn/kube-ovn) / Multus。
-
-镜像由 **Gitee Go** 云端构建，推送到阿里云 ACR（河源）：
-
-```text
-registry.cn-heyuan.aliyuncs.com/yuanbuluo/kubevirt
-```
-
-| Tag | 说明 |
-|-----|------|
-| `web-latest` | 前端面板 |
-| `api-latest` | HTTP API |
-| `virt-latest` | KubeVirt gRPC |
-| `ovn-latest` | Kube-OVN gRPC |
-
-```bash
-docker pull registry.cn-heyuan.aliyuncs.com/yuanbuluo/kubevirt:web-latest
-docker pull registry.cn-heyuan.aliyuncs.com/yuanbuluo/kubevirt:api-latest
-docker pull registry.cn-heyuan.aliyuncs.com/yuanbuluo/kubevirt:virt-latest
-docker pull registry.cn-heyuan.aliyuncs.com/yuanbuluo/kubevirt:ovn-latest
-```
-
-默认账号：`admin`（密码以你部署时的配置为准）。  
-试用 / 部署问题加微信：**rz1433**
-
----
-
 ## 联系方式
 
 微信 / 联系：**rz1433**
@@ -116,5 +132,5 @@ docker pull registry.cn-heyuan.aliyuncs.com/yuanbuluo/kubevirt:ovn-latest
 
 ## 仓库说明
 
-本仓库提供产品说明与界面截图，方便对比选型。  
-业务代码通过容器镜像分发，不在此开源。
+本仓库提供产品说明、界面截图与 **Docker Compose 部署文件**。  
+业务源码不开源，通过容器镜像分发。

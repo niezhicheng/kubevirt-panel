@@ -1,0 +1,46 @@
+# KubeVirt 面板 — 一键部署
+#
+# 前置：本机可访问目标 Kubernetes（KubeVirt 已装；Kube-OVN 可选）
+# 用法：
+#   cp .env.example .env   # 按需改 KUBECONFIG_HOST / WEB_PORT
+#   docker compose pull
+#   docker compose up -d
+# 浏览器：http://localhost:8080  默认账号 admin / admin123
+
+name: kubevirt-panel
+
+services:
+  virt:
+    image: registry.cn-heyuan.aliyuncs.com/yuanbuluo/kubevirt:virt-latest
+    container_name: kubevirt-panel-virt
+    restart: unless-stopped
+    volumes:
+      - ${KUBECONFIG_HOST:-${HOME}/.kube/config}:/root/.kube/config:ro
+    environment:
+      KUBECONFIG: /root/.kube/config
+
+  ovn:
+    image: registry.cn-heyuan.aliyuncs.com/yuanbuluo/kubevirt:ovn-latest
+    container_name: kubevirt-panel-ovn
+    restart: unless-stopped
+    volumes:
+      - ${KUBECONFIG_HOST:-${HOME}/.kube/config}:/root/.kube/config:ro
+    environment:
+      KUBECONFIG: /root/.kube/config
+
+  api:
+    image: registry.cn-heyuan.aliyuncs.com/yuanbuluo/kubevirt:api-latest
+    container_name: kubevirt-panel-api
+    restart: unless-stopped
+    depends_on:
+      - virt
+      - ovn
+
+  web:
+    image: registry.cn-heyuan.aliyuncs.com/yuanbuluo/kubevirt:web-latest
+    container_name: kubevirt-panel-web
+    restart: unless-stopped
+    ports:
+      - "${WEB_PORT:-8080}:80"
+    depends_on:
+      - api
